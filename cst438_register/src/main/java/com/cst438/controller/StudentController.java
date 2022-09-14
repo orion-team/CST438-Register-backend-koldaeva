@@ -21,6 +21,7 @@ public class StudentController {
     @PostMapping("/student")
     @Transactional
     public Student addStudent (@RequestBody StudentDTO studentDTO) {
+        // As an administrator, I can add a student to the system.
         Student existingStudent = studentRepository.findByEmail(studentDTO.studentEmail);
 
         if (existingStudent != null) {
@@ -37,16 +38,31 @@ public class StudentController {
 
     @PutMapping(value = "/student/{student_id}")
     @Transactional
-    public Student updateStudentHold(@PathVariable("student_id") int id, @RequestBody StudentDTO studentDTO) {
+    public Student updateStudent(@PathVariable("student_id") int id, @RequestBody StudentDTO studentDTO) {
         Optional<Student> existingStudent = studentRepository.findById(id);
 
         if (existingStudent.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student with provided id does not exist.");
         } else {
             Student student = existingStudent.get();
+
+            // As an administrator, I can put student registration on HOLD.
+            // As an administrator, I can release the HOLD on student registration.
+            // To release the hold - issue a put request with the statusCode == 0
             student.setStatusCode(studentDTO.statusCode);
             student.setStatus(studentDTO.status);
             return studentRepository.save(student);
+        }
+    }
+
+    @GetMapping(value = "/student/{student_id}")
+    public Student getStudent(@PathVariable("student_id") int id) {
+        Optional<Student> existingStudent = studentRepository.findById(id);
+
+        if (existingStudent.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with provided id does not exist");
+        } else {
+            return existingStudent.get();
         }
     }
 }

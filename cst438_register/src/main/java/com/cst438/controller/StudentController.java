@@ -9,10 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-
 public class StudentController {
 
     @Autowired
@@ -20,6 +21,7 @@ public class StudentController {
 
     @PostMapping("/student")
     @Transactional
+    @CrossOrigin(origins = {"http://localhost:3000", "https://registerf-cst438.herokuapp.com/"})
     public Student addStudent (@RequestBody StudentDTO studentDTO) {
         // As an administrator, I can add a student to the system.
         Student existingStudent = studentRepository.findByEmail(studentDTO.studentEmail);
@@ -32,11 +34,14 @@ public class StudentController {
             Student student = new Student();
             student.setName(studentDTO.studentName);
             student.setEmail(studentDTO.studentEmail);
+            student.setStatusCode(studentDTO.statusCode);
+            student.setStatus(studentDTO.status);
             return studentRepository.save(student);
         }
     }
 
     @PutMapping(value = "/student/{student_id}")
+    @CrossOrigin(origins = {"http://localhost:3000", "https://registerf-cst438.herokuapp.com/"})
     @Transactional
     public Student updateStudent(@PathVariable("student_id") int id, @RequestBody StudentDTO studentDTO) {
         Optional<Student> existingStudent = studentRepository.findById(id);
@@ -56,6 +61,7 @@ public class StudentController {
     }
 
     @GetMapping(value = "/student/{student_id}")
+    @CrossOrigin(origins = {"http://localhost:3000", "https://registerf-cst438.herokuapp.com/"})
     public Student getStudent(@PathVariable("student_id") int id) {
         Optional<Student> existingStudent = studentRepository.findById(id);
 
@@ -64,6 +70,15 @@ public class StudentController {
         } else {
             return existingStudent.get();
         }
+    }
+
+    @GetMapping(value = "/student")
+    @CrossOrigin(origins = {"http://localhost:3000", "https://registerf-cst438.herokuapp.com/"})
+    public List<Student> getStudents() {
+        List<Student> students = new ArrayList<>();
+        studentRepository.findAll().forEach(students::add);
+
+        return students;
     }
 }
 

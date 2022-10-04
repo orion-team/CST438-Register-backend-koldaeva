@@ -38,7 +38,7 @@ import com.cst438.domain.EnrollmentRepository;
 @SpringBootTest
 public class EndToEndScheduleTest {
 
-	public static final String CHROME_DRIVER_FILE_LOCATION = "C:/chromedriver_win32/chromedriver.exe";
+	public static final String CHROME_DRIVER_FILE_LOCATION = "/Users/kseniakoldaeva/chromedriver";
 
 	public static final String URL = "http://localhost:3000";
 
@@ -104,7 +104,7 @@ public class EndToEndScheduleTest {
 
 			// Locate and click "Get Schedule" button
 			
-			driver.findElement(By.xpath("//a")).click();
+			driver.findElement(By.xpath("//a[@href='/schedule']")).click();
 			Thread.sleep(SLEEP_DURATION);
 
 			// Locate and click "Add Course" button which is the first and only button on the page.
